@@ -1,0 +1,37 @@
+name: SonarCloud Scan
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  sonarcloud:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Build with Ant
+        run: ant clean build
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          projectKey: examen-serrano_examen-serrano
+          organization: examen-serrano
+          token: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Export SonarCloud report to Markdown
+        run: |
+          mkdir -p reports
+          curl -u ${{ secrets.SONAR_TOKEN }} \
+          -X GET "https://sonarcloud.io/api/issues/search?component=TuUsuario_ProyectoPrestamos" \
+          -o reports/sonar_report.json
+          echo "SonarCloud report saved in reports/sonar_report.json"
