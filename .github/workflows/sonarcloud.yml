@@ -27,16 +27,10 @@ jobs:
           mv apache-tomcat-9.0.109 $HOME/tomcat
           echo "Tomcat installed at $HOME/tomcat"
 
-      - name: Download NetBeans CopyLibs JAR
-        run: |
-          mkdir -p $HOME/ant-libs
-          wget -O $HOME/ant-libs/org-netbeans-modules-java-j2seproject-copylibstask.jar \
-          https://repo1.maven.org/maven2/org/netbeans/modules/org-netbeans-modules-java-j2seproject/RELEASE220/org-netbeans-modules-java-j2seproject-RELEASE220.jar
-
       - name: Build with Ant
         working-directory: ProyectoPrestamos
         run: |
-          ant -Dlibs.CopyLibs.classpath=$HOME/ant-libs/org-netbeans-modules-java-j2seproject-copylibstask.jar \
+          ant -Dlibs.CopyLibs.classpath=$GITHUB_WORKSPACE/ProyectoPrestamos/lib/org-netbeans-modules-java-j2seproject-copylibstask.jar \
           -Dj2ee.server.home=$HOME/tomcat clean dist
 
       - name: SonarCloud Scan
