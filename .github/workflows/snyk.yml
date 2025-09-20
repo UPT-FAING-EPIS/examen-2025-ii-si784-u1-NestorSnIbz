@@ -33,7 +33,8 @@ jobs:
       - name: Build project with Ant
         working-directory: ProyectoPrestamos
         run: |
-          ant -Dj2ee.server.home=$HOME/tomcat clean dist
+          ant -Dlibs.CopyLibs.classpath=$GITHUB_WORKSPACE/ProyectoPrestamos/lib/org-netbeans-modules-java-j2seproject-copylibstask.jar \
+              -Dj2ee.server.home=$HOME/tomcat clean dist
 
       - name: Install Snyk CLI
         run: npm install -g snyk
