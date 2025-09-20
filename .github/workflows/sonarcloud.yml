@@ -35,15 +35,19 @@ jobs:
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          projectKey: examen-serrano_examen-serrano
-          organization: examen-serrano
-          token: ${{ secrets.SONAR_TOKEN }}
+          args: >
+            -Dsonar.projectKey=examen-serrano_examen-serrano
+            -Dsonar.organization=examen-serrano
+            -Dsonar.sources=ProyectoPrestamos
+            -Dsonar.java.binaries=ProyectoPrestamos/build
 
       - name: Export SonarCloud report to JSON
         run: |
           mkdir -p reports
           curl -u ${{ secrets.SONAR_TOKEN }} \
-          -X GET "https://sonarcloud.io/api/issues/search?component=TuUsuario_ProyectoPrestamos" \
+          -X GET "https://sonarcloud.io/api/issues/search?component=examen-serrano_examen-serrano" \
           -o reports/sonar_report.json
           echo "SonarCloud report saved in reports/sonar_report.json"
