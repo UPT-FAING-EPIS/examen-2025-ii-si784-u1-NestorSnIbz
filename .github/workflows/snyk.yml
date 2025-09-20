@@ -20,12 +20,20 @@ jobs:
           distribution: temurin
           java-version: 21
 
+      - name: Install Tomcat 9.0.109
+        run: |
+          wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.109/bin/apache-tomcat-9.0.109.tar.gz
+          tar -xzf apache-tomcat-9.0.109.tar.gz
+          mv apache-tomcat-9.0.109 $HOME/tomcat
+          echo "Tomcat installed at $HOME/tomcat"
+
       - name: Install Ant
         run: sudo apt-get update && sudo apt-get install -y ant
 
       - name: Build project with Ant
         working-directory: ProyectoPrestamos
-        run: ant clean dist
+        run: |
+          ant -Dj2ee.server.home=$HOME/tomcat clean dist
 
       - name: Install Snyk CLI
         run: npm install -g snyk
