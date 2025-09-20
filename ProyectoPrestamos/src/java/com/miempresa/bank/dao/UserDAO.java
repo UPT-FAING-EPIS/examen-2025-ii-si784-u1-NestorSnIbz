@@ -2,6 +2,8 @@ package com.miempresa.bank.dao;
 
 import com.miempresa.bank.model.User;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserDAO {
 
@@ -44,4 +46,27 @@ public class UserDAO {
         }
         return false;
     }
+    
+    // Agregar este método a la clase UserDAO
+public List<User> findAll() {
+    List<User> list = new ArrayList<>();
+    String sql = "SELECT * FROM usuario ORDER BY fecha_registro DESC";
+    try (Connection c = DBConnection.getConnection();
+         PreparedStatement ps = c.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+            User u = new User();
+            u.setId(rs.getInt("id"));
+            u.setUsername(rs.getString("username"));
+            u.setPassword(rs.getString("password"));
+            u.setNombre(rs.getString("nombre"));
+            u.setEmail(rs.getString("email"));
+            u.setRol(rs.getString("rol"));
+            list.add(u);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return list;
+}
 }

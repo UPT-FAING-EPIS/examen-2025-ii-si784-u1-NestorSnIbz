@@ -14,6 +14,17 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(jakarta.servlet.http.HttpServletRequest req, jakarta.servlet.http.HttpServletResponse resp) throws ServletException, IOException {
+        // Redirigir a loans si ya está autenticado
+        HttpSession session = req.getSession(false);
+        if (session != null && session.getAttribute("user") != null) {
+            User user = (User) session.getAttribute("user");
+            if ("ADMIN".equals(user.getRol())) {
+                resp.sendRedirect("admin");
+            } else {
+                resp.sendRedirect("loans");
+            }
+            return;
+        }
         req.getRequestDispatcher("login.jsp").forward(req, resp);
     }
 
@@ -26,7 +37,13 @@ public class LoginServlet extends HttpServlet {
         if (u != null && u.getPassword().equals(password)) {
             HttpSession session = req.getSession();
             session.setAttribute("user", u);
-            resp.sendRedirect("loans");
+            
+            // Redirigir según el rol
+            if ("ADMIN".equals(u.getRol())) {
+                resp.sendRedirect("admin");
+            } else {
+                resp.sendRedirect("loans");
+            }
         } else {
             req.setAttribute("error", "Usuario o contraseña incorrectos");
             req.getRequestDispatcher("login.jsp").forward(req, resp);

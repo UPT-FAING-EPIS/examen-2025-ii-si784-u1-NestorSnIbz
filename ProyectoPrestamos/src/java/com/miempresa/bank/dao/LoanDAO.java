@@ -83,4 +83,29 @@ public class LoanDAO {
         } catch(SQLException e){ e.printStackTrace(); }
         return false;
     }
+    
+    public List<Loan> findAll() {
+    List<Loan> list = new ArrayList<>();
+    String sql = "SELECT * FROM prestamo ORDER BY fecha_solicitud DESC";
+    try (Connection c = DBConnection.getConnection();
+         PreparedStatement ps = c.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+            Loan l = new Loan();
+            l.setId(rs.getInt("id"));
+            l.setFkUsuario(rs.getInt("fk_usuario"));
+            l.setMonto(rs.getDouble("monto"));
+            l.setPlazoMeses(rs.getInt("plazo_meses"));
+            l.setTasa(rs.getDouble("tasa"));
+            l.setEstado(rs.getString("estado"));
+            l.setDescripcion(rs.getString("descripcion"));
+            l.setFechaSolicitud(rs.getDate("fecha_solicitud"));
+            l.setFechaAprobacion(rs.getDate("fecha_aprobacion"));
+            list.add(l);
+        }
+    } catch(SQLException e){ 
+        e.printStackTrace(); 
+    }
+    return list;
+}
 }
