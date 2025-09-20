@@ -9,8 +9,11 @@ on:
 jobs:
   sonarcloud:
     runs-on: ubuntu-latest
+
     steps:
+
       - uses: actions/checkout@v3
+
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -18,9 +21,16 @@ jobs:
           distribution: temurin
           java-version: 17
 
+      - name: Install Tomcat
+        run: |
+          wget https://downloads.apache.org/tomcat/tomcat-9/v9.0.88/bin/apache-tomcat-9.0.88.tar.gz
+          tar -xzf apache-tomcat-9.0.88.tar.gz
+          mv apache-tomcat-9.0.88 $HOME/tomcat
+          echo "Tomcat installed at $HOME/tomcat"
+
       - name: Build with Ant
         working-directory: ProyectoPrestamos
-        run: ant clean build
+        run: ant -Dj2ee.server.home=$HOME/tomcat clean build
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
@@ -29,7 +39,7 @@ jobs:
           organization: examen-serrano
           token: ${{ secrets.SONAR_TOKEN }}
 
-      - name: Export SonarCloud report to Markdown
+      - name: Export SonarCloud report to JSON
         run: |
           mkdir -p reports
           curl -u ${{ secrets.SONAR_TOKEN }} \
