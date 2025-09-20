@@ -1,0 +1,39 @@
+name: Generate UML Diagrams
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  generate-uml:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21' # Ajusta según tu proyecto
+          distribution: 'temurin'
+
+      - name: Install Graphviz
+        run: sudo apt-get update && sudo apt-get install -y graphviz curl
+
+      - name: Download PlantUML
+        run: curl -L -o plantuml.jar https://sourceforge.net/projects/plantuml/files/plantuml.jar/download
+
+      - name: Generate UML Diagrams
+        run: |
+          mkdir -p uml_diagrams
+          # Busca todos los archivos Java en el proyecto y genera diagramas PNG
+          java -jar plantuml.jar -tpng -o uml_diagrams $(find . -name "*.java")
+
+      - name: Upload UML Diagrams
+        uses: actions/upload-artifact@v4
+        with:
+          name: uml-diagrams
+          path: uml_diagrams/
