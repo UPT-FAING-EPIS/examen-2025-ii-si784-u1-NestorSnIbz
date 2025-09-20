@@ -1,0 +1,106 @@
+@media (max-width: 992px) {
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .user-info {
+        margin: 0.5rem 0;
+    }
+    
+    .nav-links {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    table {
+        display: block;
+        overflow-x: auto;
+    }
+}
+
+/* Dispositivos móviles pequeños */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 10px;
+    }
+    
+    form {
+        padding: 1rem;
+    }
+    
+    .section {
+        padding: 1rem;
+    }
+    
+    th, td {
+        padding: 0.5rem;
+    }
+    
+    /* Ocultar columnas menos importantes en tablas */
+    td:nth-child(5),
+    th:nth-child(5),
+    td:nth-child(7),
+    th:nth-child(7) {
+        display: none;
+    }
+    
+    /* Formularios en columnas en móviles */
+    form input[type="text"],
+    form input[type="password"],
+    form input[type="email"],
+    form input[type="number"],
+    form select,
+    form textarea {
+        margin-bottom: 0.75rem;
+    }
+}
+
+/* Dispositivos muy pequeños (móviles) */
+@media (max-width: 576px) {
+    body {
+        font-size: 14px;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    /* Ocultar más columnas en tablas para móviles muy pequeños */
+    td:nth-child(4),
+    th:nth-child(4),
+    td:nth-child(6),
+    th:nth-child(6) {
+        display: none;
+    }
+    
+    /* Botones de tamaño completo en móviles */
+    form button, .btn {
+        display: block;
+        width: 100%;
+        text-align: center;
+    }
+    
+    /* Formularios inline en móviles */
+    form select, form input[type="number"] {
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* Estilos para impresión */
+@media print {
+    .nav-links, form, .no-print {
+        display: none;
+    }
+    
+    body, .section {
+        background-color: white;
+        box-shadow: none;
+    }
+    
+    table {
+        box-shadow: none;
+        page-break-inside: avoid;
+    }
+}

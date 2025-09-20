@@ -8,38 +8,85 @@
 %>
 <!DOCTYPE html>
 <html>
-<head><meta charset="utf-8"/><title>Mis préstamos</title></head>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis préstamos</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
 <body>
-  <h2>Bienvenido, <%= user.getNombre() %> - Mis préstamos</h2>
-  <a href="logout">Cerrar sesión</a>
-  <h3>Solicitar nuevo préstamo</h3>
-  <form method="post" action="loans">
-    Monto: <input name="monto" required/><br/>
-    Plazo (meses): <input name="plazo" required/><br/>
-    Tasa (%): <input name="tasa" required/><br/>
-    Descripción: <input name="descripcion"/><br/>
-    <button type="submit">Solicitar</button>
-  </form>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <h1>Mis Préstamos</h1>
+                <div class="user-info">
+                    Bienvenido, <%= user.getNombre() %>
+                </div>
+                <div class="nav-links">
+                    <a href="logout">Cerrar sesión</a>
+                </div>
+            </div>
+        </div>
+    </header>
 
-  <h3>Lista de préstamos</h3>
-  <table border="1">
-    <tr><th>ID</th><th>Monto</th><th>Plazo</th><th>Tasa</th><th>Estado</th><th>Acciones</th></tr>
-    <%
-      if (loans != null) {
-        for (Loan l : loans) {
-    %>
-      <tr>
-        <td><%= l.getId() %></td>
-        <td><%= l.getMonto() %></td>
-        <td><%= l.getPlazoMeses() %></td>
-        <td><%= l.getTasa() %></td>
-        <td><%= l.getEstado() %></td>
-        <td><a href="loan?id=<%= l.getId() %>">Ver</a></td>
-      </tr>
-    <%
-        }
-      }
-    %>
-  </table>
+    <div class="container">
+        <div class="section">
+            <h2>Solicitar nuevo préstamo</h2>
+            <form method="post" action="loans">
+                <div>
+                    <label for="monto">Monto:</label>
+                    <input id="monto" name="monto" required/>
+                </div>
+                <div>
+                    <label for="plazo">Plazo (meses):</label>
+                    <input id="plazo" name="plazo" required/>
+                </div>
+                <div>
+                    <label for="tasa">Tasa (%):</label>
+                    <input id="tasa" name="tasa" required/>
+                </div>
+                <div>
+                    <label for="descripcion">Descripción:</label>
+                    <input id="descripcion" name="descripcion"/>
+                </div>
+                <button type="submit" class="btn btn-primary">Solicitar</button>
+            </form>
+        </div>
+
+        <div class="section">
+            <h2>Lista de préstamos</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Monto</th>
+                        <th>Plazo</th>
+                        <th>Tasa</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <%
+                      if (loans != null) {
+                        for (Loan l : loans) {
+                    %>
+                      <tr>
+                        <td><%= l.getId() %></td>
+                        <td><%= l.getMonto() %></td>
+                        <td><%= l.getPlazoMeses() %></td>
+                        <td><%= l.getTasa() %></td>
+                        <td><%= l.getEstado() %></td>
+                        <td><a href="loan?id=<%= l.getId() %>" class="btn btn-primary">Ver</a></td>
+                      </tr>
+                    <%
+                        }
+                      }
+                    %>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </body>
 </html>
