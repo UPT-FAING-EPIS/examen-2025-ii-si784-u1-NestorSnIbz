@@ -19,6 +19,7 @@ jobs:
           java-version: 17
 
       - name: Build with Ant
+        working-directory: ProyectoPrestamos
         run: ant clean build
 
       - name: SonarCloud Scan
