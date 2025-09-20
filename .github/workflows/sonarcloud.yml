@@ -27,10 +27,10 @@ jobs:
           echo "Tomcat installed at $HOME/tomcat"
 
       - name: Download NetBeans CopyLibs
-  run: |
-    mkdir -p $HOME/ant-libs
-    wget -O $HOME/ant-libs/org-netbeans-modules-java-j2seproject-copylibstask.jar \
-    https://search.maven.org/remotecontent?filepath=org/netbeans/modules/org-netbeans-modules-java-j2seproject-copylibstask/1.50/org-netbeans-modules-java-j2seproject-copylibstask-1.50.jar
+        run: |
+          mkdir -p $HOME/ant-libs
+          wget -O $HOME/ant-libs/org-netbeans-modules-java-j2seproject-copylibstask.jar \
+          https://search.maven.org/remotecontent?filepath=org/netbeans/modules/org-netbeans-modules-java-j2seproject-copylibstask/1.50/org-netbeans-modules-java-j2seproject-copylibstask-1.50.jar
 
       - name: Build with Ant
         working-directory: ProyectoPrestamos    
@@ -46,7 +46,5 @@ jobs:
       - name: Export SonarCloud report to JSON
         run: |
           mkdir -p reports
-          curl -u ${{ secrets.SONAR_TOKEN }} \
-          -X GET "https://sonarcloud.io/api/issues/search?component=TuUsuario_ProyectoPrestamos" \ 
-          -o reports/sonar_report.json
+          curl -u "${{ secrets.SONAR_TOKEN }}" -X GET "https://sonarcloud.io/api/issues/search?component=TuUsuario_ProyectoPrestamos" -o reports/sonar_report.json
           echo "SonarCloud report saved in reports/sonar_report.json"
