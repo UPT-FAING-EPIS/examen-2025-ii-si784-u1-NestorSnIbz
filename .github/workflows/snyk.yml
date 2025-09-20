@@ -44,18 +44,16 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: snyk auth $SNYK_TOKEN
 
-      - name: Run Snyk scan on JAR
-        working-directory: ProyectoPrestamos/build
+      - name: Run Snyk scan and generate reports
+        working-directory: ProyectoPrestamos
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
-          for jar in *.jar; do
-            echo "Scanning $jar"
-            snyk test --file="$jar" --json > "${jar%.jar}_snyk_report.json" || true
-          done
+          mkdir -p snyk_reports
+          snyk test --all-projects --json > snyk_reports/snyk_report.json || true
 
       - name: Upload Snyk reports
         uses: actions/upload-artifact@v4
         with:
           name: snyk-reports
-          path: ProyectoPrestamos/build/*_snyk_report.json
+          path: ProyectoPrestamos/snyk_reports/
