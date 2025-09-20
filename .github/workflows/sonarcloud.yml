@@ -27,10 +27,10 @@ jobs:
           echo "Tomcat installed at $HOME/tomcat"
 
       - name: Download NetBeans CopyLibs
-        run: |
-          mkdir -p $HOME/ant-libs
-          wget -O $HOME/ant-libs/org-netbeans-modules-java-j2seproject-copylibstask.jar \
-          https://repo1.maven.org/maven2/org/netbeans/modules/org-netbeans-modules-java-j2seproject-copylibstask/RELEASE200/org-netbeans-modules-java-j2seproject-copylibstask-RELEASE200.jar
+  run: |
+    mkdir -p $HOME/ant-libs
+    wget -O $HOME/ant-libs/org-netbeans-modules-java-j2seproject-copylibstask.jar \
+    https://search.maven.org/remotecontent?filepath=org/netbeans/modules/org-netbeans-modules-java-j2seproject-copylibstask/1.50/org-netbeans-modules-java-j2seproject-copylibstask-1.50.jar
 
       - name: Build with Ant
         working-directory: ProyectoPrestamos
