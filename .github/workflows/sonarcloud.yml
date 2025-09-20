@@ -26,15 +26,9 @@ jobs:
           mv apache-tomcat-9.0.109 $HOME/tomcat
           echo "Tomcat installed at $HOME/tomcat"
 
-      - name: Download NetBeans CopyLibs
-        run: |
-          mkdir -p $HOME/ant-libs
-          wget -O $HOME/ant-libs/org-netbeans-modules-java-j2seproject-copylibstask.jar \
-          https://hub.spigotmc.org/stash/projects/PLUGIN/repos/essentials/browse/lib/CopyLibs/org-netbeans-modules-java-j2seproject-copylibstask.jar?at=88c1b785af81cfe213fb771243f1605d394619ab
-
       - name: Build with Ant
         working-directory: ProyectoPrestamos
-        run: ant -Dlibs.CopyLibs.classpath=$HOME/ant-libs/org-netbeans-modules-java-j2seproject-copylibstask.jar -Dj2ee.server.home=$HOME/tomcat clean build
+        run: ant clean dist -Dj2ee.server.home=$HOME/tomcat
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
@@ -46,7 +40,5 @@ jobs:
       - name: Export SonarCloud report to JSON
         run: |
           mkdir -p reports
-          curl -u ${{ secrets.SONAR_TOKEN }} \
-          -X GET "https://sonarcloud.io/api/issues/search?component=TuUsuario_ProyectoPrestamos" \
-          -o reports/sonar_report.json
+          curl -u "${{ secrets.SONAR_TOKEN }}" -X GET "https://sonarcloud.io/api/issues/search?component=TuUsuario_ProyectoPrestamos" -o reports/sonar_report.json
           echo "SonarCloud report saved in reports/sonar_report.json"
