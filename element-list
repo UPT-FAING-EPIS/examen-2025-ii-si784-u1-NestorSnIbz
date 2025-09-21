@@ -1,0 +1,4 @@
+com.miempresa.bank.dao
+com.miempresa.bank.model
+com.miempresa.bank.service
+com.miempresa.bank.servlet

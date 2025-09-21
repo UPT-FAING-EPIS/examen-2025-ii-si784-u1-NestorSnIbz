@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.miempresa.bank.dao"},{"l":"com.miempresa.bank.model"},{"l":"com.miempresa.bank.service"},{"l":"com.miempresa.bank.servlet"}];updateSearchResults();
