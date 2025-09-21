@@ -1,0 +1,65 @@
+name: Semgrep Scan
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  semgrep:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Semgrep
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install semgrep
+
+      - name: Run Semgrep Scan
+        run: |
+          mkdir -p reports
+          # Escaneo con reglas de seguridad, OWASP y buenas prácticas
+          semgrep ci \
+            --config=p/ci \
+            --config=p/security-audit \
+            --json > reports/semgrep_report.json
+
+
+      - name: Convert report to Markdown
+        run: |
+          echo "# Semgrep Report" > reports/semgrep_report.md
+          echo "\n**Fecha de escaneo:** $(date)" >> reports/semgrep_report.md
+          echo "\n## Resultados\n" >> reports/semgrep_report.md
+
+          # Contar hallazgos
+          TOTAL=$(jq '.results | length' reports/semgrep_report.json)
+          echo "**Total de hallazgos:** $TOTAL" >> reports/semgrep_report.md
+          echo "" >> reports/semgrep_report.md
+
+          if [ "$TOTAL" -gt 0 ]; then
+            echo "| Archivo | Regla | Severidad | Mensaje |" >> reports/semgrep_report.md
+            echo "|--------|------|-----------|---------|" >> reports/semgrep_report.md
+            jq -r '.results[] | "| \(.path) | \(.check_id) | \(.extra.severity) | \(.extra.message) |"' \
+               reports/semgrep_report.json >> reports/semgrep_report.md
+          else
+            echo "✅ **No se encontraron bugs ni vulnerabilidades.**" >> reports/semgrep_report.md
+          fi
+
+
+      - name: Upload Markdown Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep-report
+          path: reports/semgrep_report.md
+
+      - name: Fail if findings
+        run: |
+          TOTAL=$(jq '.results | length' reports/semgrep_report.json)
+          if [ "$TOTAL" -gt 0 ]; then
+            echo "❌ Se encontraron $TOTAL problemas. Corrígelos antes de hacer merge."
+            exit 1
+          fi
