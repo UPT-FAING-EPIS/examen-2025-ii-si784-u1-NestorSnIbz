@@ -14,7 +14,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-
       - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
@@ -22,25 +21,35 @@ jobs:
           java-version: 21
 
 
+      - name: Download Jakarta Servlet API
+        run: |
+          mkdir -p ProyectoPrestamos/lib
+          curl -L -o ProyectoPrestamos/lib/jakarta-servlet-api.jar \
+            https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/6.1.0/jakarta.servlet-api-6.1.0.jar
+
       - name: Generate Javadoc
         run: |
           mkdir -p ProyectoPrestamos/docs
-          javadoc -d ProyectoPrestamos/docs -sourcepath ProyectoPrestamos/src/java -subpackages com.miempresa.bank
+          javadoc -d ProyectoPrestamos/docs \
+                  -classpath ProyectoPrestamos/lib/jakarta-servlet-api.jar \
+                  -sourcepath ProyectoPrestamos/src/java \
+                  -subpackages com.miempresa.bank
 
 
       - name: Generate UML diagrams
         run: |
           mkdir -p ProyectoPrestamos/docs/uml_diagrams
-          # Solo se generará si existen bloques @startuml
           docker run --rm -v $GITHUB_WORKSPACE:/workspace plantuml/plantuml \
-            -tpng /workspace/ProyectoPrestamos/src/java/com/miempresa/bank/**/*.java -o /workspace/ProyectoPrestamos/docs/uml_diagrams || true
+            -tpng /workspace/ProyectoPrestamos/src/java/com/miempresa/bank/**/*.java \
+            -o /workspace/ProyectoPrestamos/docs/uml_diagrams || true
 
 
       - name: Run Semgrep Scan
         run: |
           mkdir -p ProyectoPrestamos/docs/reports
           docker run --rm -v $GITHUB_WORKSPACE:/src returntocorp/semgrep \
-            semgrep ci --config=p/ci --config=p/security-audit --json > ProyectoPrestamos/docs/reports/semgrep_report.json || true
+            semgrep ci --config=p/ci --config=p/security-audit --json \
+            > ProyectoPrestamos/docs/reports/semgrep_report.json || true
 
 
       - name: Convert Semgrep JSON to Markdown
@@ -55,12 +64,12 @@ jobs:
             jq -r '.results[] | "| \(.path) | \(.check_id) | \(.extra.severity) | \(.extra.message) |"' \
                ProyectoPrestamos/docs/reports/semgrep_report.json >> ProyectoPrestamos/docs/reports/semgrep_report.md
           else
-            echo " No se encontraron bugs ni vulnerabilidades." >> ProyectoPrestamos/docs/reports/semgrep_report.md
+            echo "No se encontraron bugs ni vulnerabilidades." >> ProyectoPrestamos/docs/reports/semgrep_report.md
           fi
 
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+        uses: peaceiris/actions-gh-pages@v5
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ProyectoPrestamos/docs
