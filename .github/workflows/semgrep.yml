@@ -46,7 +46,7 @@ jobs:
             jq -r '.results[] | "| \(.path) | \(.check_id) | \(.extra.severity) | \(.extra.message) |"' \
                reports/semgrep_report.json >> reports/semgrep_report.md
           else
-            echo "✅ **No se encontraron bugs ni vulnerabilidades.**" >> reports/semgrep_report.md
+            echo " **No se encontraron bugs ni vulnerabilidades.**" >> reports/semgrep_report.md
           fi
 
 
@@ -60,6 +60,6 @@ jobs:
         run: |
           TOTAL=$(jq '.results | length' reports/semgrep_report.json)
           if [ "$TOTAL" -gt 0 ]; then
-            echo "❌ Se encontraron $TOTAL problemas. Corrígelos antes de hacer merge."
+            echo " Se encontraron $TOTAL problemas. Corrígelos antes de hacer merge."
             exit 1
           fi
